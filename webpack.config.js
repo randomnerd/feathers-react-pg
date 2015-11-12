@@ -15,6 +15,10 @@ module.exports = {
     filename: '[name].js',
     publicPath: '/'
   },
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+    root: path.join(__dirname, '/app'),
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'app/index.tpl.html',
@@ -30,9 +34,9 @@ module.exports = {
   ],
   module: {
     loaders: [{
-      test: /\.js?$/,
+      test: /\.jsx?$/,
       exclude: /node_modules/,
-      loader: 'babel?optional=es7.decorators'
+      loader: 'babel?optional=es7.decorators&stage=0'
     }, {
       test: /\.json?$/,
       loader: 'json'

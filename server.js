@@ -9,7 +9,7 @@ import feathers from 'feathers';
 import pg from 'pg';
 import Sequelize from 'sequelize';
 import bodyParser from 'body-parser';
-import PostService from './app/post_service';
+import PostService from './feathers/post_service';
 
 import config from './webpack.config.js';
 
@@ -42,14 +42,14 @@ if (isDeveloping) {
   app.use(webpackHotMiddleware(compiler));
 }
 
-app.get('*', function response(req, res) {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
-
 app.configure(feathers.rest())
   .configure(feathers.socketio())
   .use(bodyParser.json())
   .use('posts', PostService);
+
+app.get('*', function response(req, res) {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
 
 app.listen(port, 'localhost', function onStart(err) {
   if (err) {
