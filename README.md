@@ -11,7 +11,7 @@ npm start
 ## Credits
 This project is based on:
 
-* [React + Webpack boilerplate by Christian Alfoni](https://github.com/christianalfoni/webpack-express-boilerplate)
+* [React + Webpack boilerplate](https://github.com/gaearon/react-transform-boilerplate)
 * [Feathers](https://github.com/feathersjs/feathers/)
 * [Sequelize](https://github.com/sequelize/sequelize)
 * [node-dbmon (Postgres DB tailing tool)](https://github.com/straps/node-dbmon)

@@ -18,7 +18,7 @@ export default function(name, schema) {
         table: name,
         monitor: 'all',
         keyfld: { name: 'id', type: 'integer' },
-        transports: 'console,eventemitter',
+        transports: 'eventemitter',
         transportsOpts: {
           eventEmitter: { eventEmitter: emitter}
         }

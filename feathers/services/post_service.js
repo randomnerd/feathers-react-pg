@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import ServiceFactory from './service_factory';
+import ServiceFactory from '../service_factory';
 
 let PostService = ServiceFactory('posts', {
   title: {
