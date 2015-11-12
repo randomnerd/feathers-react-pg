@@ -26,10 +26,16 @@
     "jscs": "jscs ."
   },
   "dependencies": {
+    "baobab": "^2.1.1",
     "body-parser": "^1.14.1",
+    "cerebral": "^0.23.0",
+    "cerebral-baobab": "^0.3.1",
+    "cerebral-react": "^0.5.1",
+    "cerebral-router": "^0.7.3",
     "dbmon": "^1.1.0",
     "feathers": "^1.2.0",
     "feathers-client": "^0.2.1",
+    "path-to-regexp": "^1.2.1",
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
     "react": "^0.14.0",
