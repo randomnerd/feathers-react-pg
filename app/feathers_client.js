@@ -33,15 +33,15 @@ export const Actions = {
 
   create(service) {
     return function create(input, state, output, {feathers}) {
-      console.log('feathers.create', service, input);
+      console.log('feathers.create', service, input.model);
       feathers[service].create(input.model, {}, (err, model) => {
-        err ? output.error(err) : output.success(model);
+        err ? output.error(err) : output.success({model});
       });
     }
   },
 
   created(input, state) {
-    console.log('feathers.created', input);
+    console.log('feathers.created', input.service, input.model);
     let path = ['data', input.service]
     let serviceData = state.get(path) || [];
     state.set(path, serviceData.concat([input.model]));
@@ -49,15 +49,15 @@ export const Actions = {
 
   remove(service) {
     return function remove(input, state, output, {feathers}) {
-      console.log('feathers.remove', service, input);
-      feathers[service].remove(input.model.id, {}, (err, model) => {
-        err ? output.error(err) : output.success(model);
+      console.log('feathers.remove', service, input.model);
+      feathers[service].remove({id: input.model.id}, {}, (err, model) => {
+        err ? output.error(err) : output.success({model});
       });
     }
   },
 
   removed(input, state) {
-    console.log('feathers.removed', input);
+    console.log('feathers.removed', input.service, input.model);
     let path = ['data', input.service]
     let serviceData = state.get(path) || [];
     let newData = _.filter(serviceData, (model) => {
@@ -69,13 +69,13 @@ export const Actions = {
   update(service) {
     return function update(input, state, output, {feathers}) {
       feathers[service].update(input.model.id, input.model, {}, (err, model) => {
-        err ? output.error(err) : output.success(model);
+        err ? output.error(err) : output.success({model});
       });
     }
   },
 
   updated(input, state) {
-    console.log('feathers.updated', input);
+    console.log('feathers.updated', input.service, input.model);
     let path = ['data', input.service]
     let serviceData = state.get(path) || [];
     let newData = _.filter(serviceData, (model) => {
