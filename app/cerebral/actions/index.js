@@ -1,20 +1,6 @@
 import _ from 'lodash';
 
 export default {
-  createPost(input, state, output, {feathers}) {
-    feathers.posts.create(input.post);
-  },
-
-  updatePost(input, state, output, {feathers}) {
-
-  },
-
-  removePost(input, state, output, {feathers}) {
-    feathers.posts.remove(input.id, {}, (err, post) => {
-      if (err) console.log('Error removing post', input.id, err);
-    });
-  },
-
   setPosts(input, state) {
     state.set(['data', 'posts'], input.posts);
   },
