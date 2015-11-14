@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default {
   setPosts(input, state) {
     state.set(['data', 'posts'], input.posts);

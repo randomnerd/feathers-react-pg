@@ -1,5 +1,6 @@
 import path from 'path';
 import feathers from 'feathers';
+import hooks from 'feathers-hooks';
 import webpack from 'webpack';
 import bodyParser from 'body-parser';
 import config from './webpack.config.dev';
@@ -16,10 +17,12 @@ app.use(require('webpack-hot-middleware')(compiler));
 
 app.configure(feathers.rest())
   .configure(feathers.socketio())
-  .use(feathers.static(__dirname + '/public'))
-  .use(bodyParser.json())
+  .configure(hooks())
+  .use(bodyParser.urlencoded({extended: true}))
+  .use(bodyParser.json());
 
 require('./feathers/pg_setup')(app);
+require('./feathers/auth_setup')(app);
 require('./feathers/services')(app);
 
 app.get('*', (req, res) => {

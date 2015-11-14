@@ -7,9 +7,10 @@ const model = Model({
   page: 'home',
   layout: 'main',
   loading: false,
-  data: {}
+  data: {},
+  user: null
 });
 
-const feathers = new FeathersClient(['posts']);
+const feathers = window.feathers = new FeathersClient(['posts']);
 const controller = Controller(model);
 export default feathers.setupController(controller);

@@ -82,6 +82,23 @@ export const Actions = {
       return model.id !== input.model.id;
     });
     state.set(path, newData.concat([input.model]));
+  },
+
+  login(input, state, output, {feathers}) {
+    $.post('/api/login', input, (error, result) => {
+      error ? output.error({error}) : output.success(result);
+    });
+  },
+
+  setUser(input, state) {
+    console.log('setUser', input);
+    state.set(['user'], input.data);
+    state.set(['token'], input.token);
+  },
+
+  logout(input, state) {
+    state.set(['user'], null);
+    state.set(['token'], null);
   }
 };
 
@@ -115,6 +132,12 @@ export default class FeathersClient {
     controller.signal('feathers.created', [Actions.created]);
     controller.signal('feathers.updated', [Actions.updated]);
     controller.signal('feathers.removed', [Actions.removed]);
+    controller.signal('feathers.login', [
+      [
+        Actions.login,
+        { success: [Actions.setUser] }
+      ]
+    ]);
     return controller;
   }
 }

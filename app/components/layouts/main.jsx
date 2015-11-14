@@ -34,11 +34,34 @@ export default class MainLayout extends React.Component {
     );
   }
 
+  renderLoginForm() {
+    return (
+      <form onSubmit={this.login.bind(this)}>
+        <input ref="username" placeholder="username" />
+        <input type="password" ref="password" placeholder="password" />
+        <input type="submit"/>
+      </form>
+    );
+  }
+
+  renderGreeting() {
+    return <span>Hello, {this.props.user.username}</span>;
+  }
+
+  login(e) {
+    if (e) e.preventDefault();
+    this.props.signals.feathers.login({
+      username: this.refs.username.value,
+      password: this.refs.password.value
+    });
+  }
+
   render() {
     return (
       <div>
         {this.renderTitle()}
         {this.renderNavbar()}
+        {this.props.user ? this.renderGreeting() : this.renderLoginForm()}
         {this.getPageComponent()}
       </div>
     );
