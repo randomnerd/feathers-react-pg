@@ -6,7 +6,8 @@ import PostPage from 'components/post';
 
 @Cerebral({
   page: ['page'],
-  title: ['title']
+  title: ['title'],
+  user: ['user']
 })
 export default class MainLayout extends React.Component {
   getPageComponent() {

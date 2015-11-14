@@ -25,6 +25,7 @@ export default class PostsPage extends React.Component {
   }
 
   render() {
+    let posts = this.props.posts || [];
     return (
       <div>
         Posts page
@@ -33,7 +34,7 @@ export default class PostsPage extends React.Component {
           <input type="submit"/>
         </form>
         <ul>
-          {this.props.posts.map((post) => {return this.renderPost(post)})}
+          {posts.map((post) => { return this.renderPost(post); })}
         </ul>
       </div>
     );

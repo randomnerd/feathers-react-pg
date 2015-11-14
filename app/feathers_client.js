@@ -85,8 +85,8 @@ export const Actions = {
   },
 
   login(input, state, output, {feathers}) {
-    $.post('/api/login', input, (error, result) => {
-      error ? output.error({error}) : output.success(result);
+    $.post('/api/login', input, (data, result) => {
+      result === 'success' ? output.success(data) : output.error(data);
     });
   },
 
@@ -135,7 +135,7 @@ export default class FeathersClient {
     controller.signal('feathers.login', [
       [
         Actions.login,
-        { success: [Actions.setUser] }
+        { success: [Actions.setUser], error: [] }
       ]
     ]);
     return controller;

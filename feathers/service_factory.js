@@ -53,7 +53,7 @@ export default function(name, schema) {
     },
 
     find(params, callback) {
-      this.model.findAll().then((models) => {
+      this.model.findAll({where: params.query}).then((models) => {
         callback(null, models);
       }).catch(callback);
     },

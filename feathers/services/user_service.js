@@ -9,10 +9,14 @@ let UserService = ServiceFactory('users', {
   password: {
     type: Sequelize.STRING
   },
-  // admin: {
-  //   type: Sequelize.BOOLEAN,
-  //   default: false
-  // }
+  admin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  },
+  internal: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: true
+  }
 });
 
 export default UserService;
