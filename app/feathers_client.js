@@ -1,5 +1,6 @@
 import SocketClient from 'socket.io-client';
 import Feathers from 'feathers-client';
+import _ from 'lodash';
 
 export const Actions = {
   load(service) {
@@ -50,7 +51,7 @@ export const Actions = {
   remove(service) {
     return function remove(input, state, output, {feathers}) {
       console.log('feathers.remove', service, input.model);
-      feathers[service].remove({id: input.model.id}, {}, (err, model) => {
+      feathers[service].remove(input.model.id, {}, (err, model) => {
         err ? output.error(err) : output.success({model});
       });
     }
@@ -91,14 +92,24 @@ export const Actions = {
   },
 
   setUser(input, state) {
-    console.log('setUser', input);
+    console.log('setUser', input.data);
     state.set(['user'], input.data);
-    state.set(['token'], input.token);
+  },
+
+  setToken(input, state) {
+    if (!input.token) return;
+    let user = state.get(['user']);
+    let {token} = input;
+    let socket = window.feathers.socket;
+
+    state.set(['token'], token);
+    if (token && !user) socket.emit('authenticate', {token});
   },
 
   logout(input, state) {
     state.set(['user'], null);
     state.set(['token'], null);
+    localStorage.removeItem('authToken');
   }
 };
 
@@ -107,6 +118,9 @@ export default class FeathersClient {
     this.services = {};
     this.socket = new SocketClient();
     this.feathers = Feathers().configure(Feathers.socketio(this.socket));
+    this.socket.on('authenticated', (data) => {
+      window.controller.signals.feathers.setUser({data});
+    });
     for (let service of services) { this.addService(service); };
   }
 
@@ -132,12 +146,20 @@ export default class FeathersClient {
     controller.signal('feathers.created', [Actions.created]);
     controller.signal('feathers.updated', [Actions.updated]);
     controller.signal('feathers.removed', [Actions.removed]);
+    controller.signal('feathers.setUser', [Actions.setUser]);
+    controller.signal('feathers.setToken', [Actions.setToken]);
+    controller.signal('feathers.logout', [Actions.logout]);
     controller.signal('feathers.login', [
       [
-        Actions.login,
-        { success: [Actions.setUser], error: [] }
+        Actions.login, {
+          success: [Actions.setUser, Actions.setToken],
+          error: []
+        }
       ]
     ]);
+
+    let token = localStorage.getItem('authToken');
+    if (token) controller.signals.feathers.setToken({token});
     return controller;
   }
 }

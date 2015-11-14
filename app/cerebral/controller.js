@@ -12,5 +12,5 @@ const model = Model({
 });
 
 const feathers = window.feathers = new FeathersClient(['posts']);
-const controller = Controller(model);
+const controller = window.controller = Controller(model);
 export default feathers.setupController(controller);

@@ -66,13 +66,13 @@ export default function(name, schema) {
     },
 
     get(id, params, callback) {
-      this.model.findOne({id}).then((model) => {
+      this.model.findOne({where: {id}}).then((model) => {
         callback(null, model);
       }).catch(callback);
     },
 
     update(id, data, params, callback) {
-      this.model.findOne({id}).then((model) => {
+      this.model.findOne({where: {id}}).then((model) => {
         model.update(data).then((model) => {
           this._locks.updated[model.id] = true;
           callback(null, model);
@@ -85,7 +85,7 @@ export default function(name, schema) {
     },
 
     remove(id, params, callback) {
-      this.model.findOne({id}).then((model) => {
+      this.model.findOne({where: {id}}).then((model) => {
         model.destroy().then(() => {
           this._locks.removed[model.id] = true;
           callback(null, model);
