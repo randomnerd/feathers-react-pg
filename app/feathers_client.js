@@ -103,6 +103,7 @@ export const Actions = {
     let socket = window.feathers.socket;
 
     state.set(['token'], token);
+    localStorage.setItem('authToken', token);
     if (token && !user) socket.emit('authenticate', {token});
   },
 

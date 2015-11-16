@@ -46,7 +46,17 @@ export default class MainLayout extends React.Component {
   }
 
   renderGreeting() {
-    return <span>Hello, {this.props.user.username}</span>;
+    return (
+      <span>
+        Hello, {this.props.user.username}
+        <button onClick={this.logout.bind(this)}>Log out</button>
+      </span>
+    );
+  }
+
+  logout(e) {
+    if (e) e.preventDefault();
+    this.props.signals.feathers.logout();
   }
 
   login(e) {
