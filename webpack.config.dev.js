@@ -5,7 +5,7 @@ module.exports = {
   devtool: 'eval',
   entry: [
     'webpack-hot-middleware/client',
-    './app/main'
+    './src/index'
   ],
   output: {
     path: path.join(__dirname, 'dist'),
@@ -14,7 +14,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
-    root: path.join(__dirname, '/app'),
+    root: path.join(__dirname, '/src'),
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
@@ -27,6 +27,7 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.jsx?$/,
+      include: path.join(__dirname, 'src'),
       exclude: /node_modules/,
       loader: 'babel?optional=es7.decorators&stage=0'
     }]

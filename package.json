@@ -50,27 +50,12 @@
   },
   "dependencies": {
     "baobab": "^2.1.1",
-    "body-parser": "^1.14.1",
     "cerebral": "^0.23.0",
     "cerebral-baobab": "^0.3.1",
     "cerebral-react": "^0.5.1",
     "cerebral-router": "^0.7.3",
-    "crypto": "0.0.3",
-    "dbmon": "^1.1.0",
-    "express-session": "^1.12.1",
-    "feathers": "^1.2.0",
-    "feathers-client": "^0.2.1",
-    "feathers-hooks": "^0.5.1",
-    "feathers-authenticate": "git@github.com:randomnerd/feathers-authentication.git#patch-1",
     "lodash": "^3.10.1",
-    "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
-    "path-to-regexp": "^1.2.1",
-    "pg": "^4.4.3",
-    "pg-hstore": "^2.3.2",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0",
-    "sequelize": "^3.13.0",
-    "socket.io-client": "^1.3.7"
+    "react-dom": "^0.14.0"
   }
 }

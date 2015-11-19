@@ -1,11 +1,9 @@
 import path from 'path';
-import feathers from 'feathers';
-import hooks from 'feathers-hooks';
+import express from 'express';
 import webpack from 'webpack';
-import bodyParser from 'body-parser';
 import config from './webpack.config.dev';
 
-let app = feathers();
+let app = express();
 let compiler = webpack(config);
 
 app.use(require('webpack-dev-middleware')(compiler, {
@@ -14,16 +12,7 @@ app.use(require('webpack-dev-middleware')(compiler, {
 }));
 
 app.use(require('webpack-hot-middleware')(compiler));
-
-app.configure(feathers.rest())
-  .configure(feathers.socketio())
-  .configure(hooks())
-  .use(bodyParser.urlencoded({extended: true}))
-  .use(bodyParser.json());
-
-require('./feathers/pg_setup')(app);
-require('./feathers/auth_setup')(app);
-require('./feathers/services')(app);
+app.use('/static', express.static(__dirname + '/static'));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));

@@ -1,9 +1,9 @@
 import Controller from 'cerebral';
 import Model from 'cerebral-baobab';
-import FeathersClient from 'feathers_client';
+import ActionHero from 'ah_client';
 
 const model = Model({
-  title: 'Feathers + React starter kit',
+  title: 'React starter kit',
   page: 'home',
   layout: 'main',
   loading: false,
@@ -11,6 +11,6 @@ const model = Model({
   user: null
 });
 
-const feathers = window.feathers = new FeathersClient(['posts']);
+const aHero = window.aHero = new ActionHero(['users']);
 const controller = window.controller = Controller(model);
-export default feathers.setupController(controller);
+export default aHero.setupController(controller);

@@ -56,12 +56,12 @@ export default class MainLayout extends React.Component {
 
   logout(e) {
     if (e) e.preventDefault();
-    this.props.signals.feathers.logout();
+    this.props.signals.aHero.logout();
   }
 
   login(e) {
     if (e) e.preventDefault();
-    this.props.signals.feathers.login({
+    this.props.signals.aHero.login({
       username: this.refs.username.value,
       password: this.refs.password.value
     });

@@ -13,7 +13,7 @@ let routes = {
   '/admin': 'adminHomeOpened'
 };
 
-// controller.signals.appStarted();
+controller.signals.appStarted();
 Router(controller, routes).trigger();
 
 ReactDOM.render(<Container controller={controller} app={App} />, document.getElementById('root'));
