@@ -11,6 +11,6 @@ const model = Model({
   user: null
 });
 
-const aHero = window.aHero = new ActionHero(['users']);
+const aHero = window.aHero = new ActionHero(['users', 'posts']);
 const controller = window.controller = Controller(model);
 export default aHero.setupController(controller);

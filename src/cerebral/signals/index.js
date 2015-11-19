@@ -2,31 +2,28 @@ import actions from 'cerebral/actions';
 import {actions as heroActions} from 'ah_client';
 
 export default function(controller) {
-  controller.signal('appStarted', [
-    heroActions.connect,
-    [heroActions.loginWithToken, {success: [heroActions.setUser, heroActions.setToken], error: []}]
-  ]);
+  controller.signal('appStarted', [heroActions.connectChain]);
   controller.signal('homeOpened', [actions.setPage('home')]);
   controller.signal('adminHomeOpened', [actions.setAdminPage('home')]);
 
   controller.signal('postsOpened', [
     actions.setTitle('Posts index'),
     actions.setPage('posts'),
-    // actions.setLoading(true),
-    // [
-    //   FeathersActions.load('posts'), {
-    //     success: [
-    //       FeathersActions.set('posts'),
-    //       actions.setLoading(false)
-    //     ]
-    //   }
-    // ]
+    actions.setLoading(true),
+    [
+      heroActions.load('posts'), {
+        success: [
+          heroActions.set('posts'),
+          actions.setLoading(false)
+        ]
+      }
+    ]
   ]);
   controller.signal('postOpened', [
     actions.setPage('post'),
     // actions.setLoading(true),
     // [
-    //   FeathersActions.loadOne('posts'), {
+    //   heroActions.loadOne('posts'), {
     //     success: [
     //       actions.setPost,
     //       actions.setLoading(false)
@@ -34,4 +31,12 @@ export default function(controller) {
     //   }
     // ]
   ]);
+  controller.signal('removePost', [
+    [
+      heroActions.remove('posts'), {
+        success: []
+      }
+    ]
+  ]);
+  controller.signal('loadUsers', [heroActions.load('users')]);
 }

@@ -7,7 +7,8 @@ export const actions = {
       let models = state.get(['data', service]);
       if (models) return output.success({models});
       console.log('aHero.load', service);
-      aHero[service].find((err, items) => {
+      aHero[service].find({}, (err, items) => {
+        console.log(err, items);
         output.success({models: items});
       });
     }
@@ -18,7 +19,7 @@ export const actions = {
       let models = state.get(['data', service]) || [];
       let model = _.find(models, (p) => { return p.id == input.id; });
       if (model) return output.success({model});
-      aHero[service].get(input.id, {}, (err, model) => {
+      aHero[service].get(input.id, (err, model) => {
         console.log('aHero.loadOne', service);
         err ? output.error(err) : output.success({model});
       })
@@ -87,8 +88,10 @@ export const actions = {
   connect(input, state, output, {aHero}) {
     aHero._client.connect((err) => {
       console.log('ah connected');
+      if (err) output.error(err);
       aHero._client.configure((info) => {
         console.log('ah configured', info);
+        output.success(info);
       })
     })
   },
@@ -129,11 +132,33 @@ export const actions = {
   }
 };
 
+actions.connectChain = [
+  actions.connect, {
+    success: [
+      [
+        actions.loginWithToken, {
+          success: [actions.setUser, actions.setToken], error: []
+        }
+      ]
+    ]
+  }
+];
+
 class ActionHeroService extends EventEmitter {
   constructor(name, client) {
     super(...arguments);
     this.client = client;
     this.name = name;
+  }
+
+  find(query, callback) {
+    this.client.action(this.name, {apiVersion: 1, query}, (data) => {
+      data.error ? callback(error) : callback(null, data.items);
+    });
+  }
+
+  get(id, callback) {
+
   }
 }
 
