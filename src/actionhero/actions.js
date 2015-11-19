@@ -1,14 +1,10 @@
-import _ from 'lodash';
-import EventEmitter from 'events';
-
-export const actions = {
+const actions = {
   load(service) {
     return function load(input, state, output, {aHero}) {
       let models = state.get(['data', service]);
       if (models) return output.success({models});
       console.log('aHero.load', service);
       aHero[service].find({}, (err, items) => {
-        console.log(err, items);
         output.success({models: items});
       });
     }
@@ -35,8 +31,9 @@ export const actions = {
   create(service) {
     return function create(input, state, output, {aHero}) {
       console.log('aHero.create', service, input.model);
-      aHero[service].create(input.model, {}, (err, model) => {
-        err ? output.error(err) : output.success({model});
+      aHero[service].create(input.model, (error, model) => {
+        if (error) return output.error({service, error});
+        output.success({service, model});
       });
     }
   },
@@ -50,39 +47,49 @@ export const actions = {
 
   remove(service) {
     return function remove(input, state, output, {aHero}) {
-      console.log('aHero.remove', service, input.model);
-      aHero[service].remove(input.model.id, {}, (err, model) => {
-        err ? output.error(err) : output.success({model});
+      let {query} = input;
+      console.log('aHero.remove', service, query);
+      aHero[service].remove(query, (error, count) => {
+        if (error) return output.error({service, query, error});
+        output.success({service, query, count});
       });
     }
   },
 
   removed(input, state) {
-    console.log('aHero.removed', input.service, input.model);
+    console.log('aHero.removed', input.service, input.query);
     let path = ['data', input.service]
     let serviceData = state.get(path) || [];
-    let newData = _.filter(serviceData, (model) => {
-      return model.id !== input.model.id;
-    });
+    let newData = _.reject(serviceData, _.matches(input.query));
     state.set(path, newData);
   },
 
   update(service) {
     return function update(input, state, output, {aHero}) {
-      aHero[service].update(input.model.id, input.model, {}, (err, model) => {
-        err ? output.error(err) : output.success({model});
+      let {query, model} = input;
+      aHero[service].update(query, model, (error, ret) => {
+        if (error) return output.error({service, query, error});
+        let {count, rows} = ret;
+        output.success({service, query, model, count, rows});
       });
     }
   },
 
   updated(input, state) {
-    console.log('aHero.updated', input.service, input.model);
+    console.log('aHero.updated', input.service, input.query);
     let path = ['data', input.service]
     let serviceData = state.get(path) || [];
-    let newData = _.filter(serviceData, (model) => {
-      return model.id !== input.model.id;
+    let {query, model} = input;
+
+    let newData = _.map(serviceData, (item) => {
+      if (_.matches(query)(item)) item = _.merge(_.clone(item), model);
+      return item;
     });
-    state.set(path, newData.concat([input.model]));
+    // let rows = _.filter(serviceData, _.matches(input.query));
+    // let newData = _.filter(serviceData, (model) => {
+    //   return model.id !== input.model.id;
+    // });
+    state.set(path, newData);
   },
 
   connect(input, state, output, {aHero}) {
@@ -144,67 +151,4 @@ actions.connectChain = [
   }
 ];
 
-class ActionHeroService extends EventEmitter {
-  constructor(name, client) {
-    super(...arguments);
-    this.client = client;
-    this.name = name;
-  }
-
-  find(query, callback) {
-    this.client.action(this.name, {apiVersion: 1, query}, (data) => {
-      data.error ? callback(error) : callback(null, data.items);
-    });
-  }
-
-  get(id, callback) {
-
-  }
-}
-
-export default class ActionHero {
-  constructor(services) {
-    this.services = {};
-    this.url = window.location.origin.replace(/\:3000/, ':8080');
-    this.aHero = window.ah = new ActionheroClient({url: this.url});
-    for (let service of services) { this.addService(service); };
-  }
-
-  addService(name) {
-    this.services[name] = new ActionHeroService(name, this.aHero);
-    //this.aHero.service('/api/' + name);
-    return this.services[name];
-  }
-
-  setupController(controller) {
-    controller.services.aHero = {_client: this.aHero};
-    for (let serviceName of Object.keys(this.services)) {
-      let service = this.services[serviceName];
-      controller.services.aHero[serviceName] = service;
-      for (let callbackName of ['created', 'updated', 'removed']) {
-        service.on(callbackName, (model) => {
-          controller.signals.aHero[callbackName]({
-            service: serviceName,
-            model: model
-          });
-        });
-      }
-    }
-    controller.signal('aHero.created', [actions.created]);
-    controller.signal('aHero.updated', [actions.updated]);
-    controller.signal('aHero.removed', [actions.removed]);
-    controller.signal('aHero.setUser', [actions.setUser]);
-    controller.signal('aHero.setToken', [actions.setToken]);
-    controller.signal('aHero.login', [
-      [
-        actions.login, {
-          success: [actions.setUser, actions.setToken],
-          error: []
-        }
-      ]
-    ]);
-    controller.signal('aHero.logout', [actions.logout]);
-
-    return controller;
-  }
-}
+export default actions;

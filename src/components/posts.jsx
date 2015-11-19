@@ -15,11 +15,25 @@ export default class PostsPage extends React.Component {
     this.refs.title.focus();
   }
 
+  updatePost(post, e) {
+    e.preventDefault();
+    let query = { id: post.id };
+    let model = { title: this.refs.title.value };
+    this.props.signals.updatePost({query, model});
+  }
+
+  removePost(post, e) {
+    e.preventDefault();
+    let query = { id: post.id };
+    this.props.signals.removePost({query});
+  }
+
   renderPost(post) {
     return (
       <li key={post.id}>
         <a href={"/posts/" + post.id}>{post.title}</a>
-      <button onClick={this.props.signals.removePost.bind(this, {model: post})}>&times;</button>
+        <button onClick={this.updatePost.bind(this, post)}>UPD</button>
+        <button onClick={this.removePost.bind(this, post)}>&times;</button>
       </li>
     );
   }

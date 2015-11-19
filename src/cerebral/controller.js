@@ -1,6 +1,6 @@
 import Controller from 'cerebral';
 import Model from 'cerebral-baobab';
-import ActionHero from 'ah_client';
+import ActionHero from 'actionhero/client';
 
 const model = Model({
   title: 'React starter kit',

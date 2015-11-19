@@ -1,5 +1,5 @@
 import actions from 'cerebral/actions';
-import {actions as heroActions} from 'ah_client';
+import heroActions from 'actionhero/actions';
 
 export default function(controller) {
   controller.signal('appStarted', [heroActions.connectChain]);
@@ -31,12 +31,27 @@ export default function(controller) {
     //   }
     // ]
   ]);
-  controller.signal('removePost', [
+  controller.signal('createPost', [
     [
-      heroActions.remove('posts'), {
-        success: []
+      heroActions.create('posts'), {
+        success: [heroActions.created]
       }
     ]
   ]);
+  controller.signal('updatePost', [
+    [
+      heroActions.update('posts'), {
+        success: [heroActions.updated]
+      }
+    ]
+  ]);
+  controller.signal('removePost', [
+    [
+      heroActions.remove('posts'), {
+        success: [heroActions.removed]
+      }
+    ]
+  ]);
+
   controller.signal('loadUsers', [heroActions.load('users')]);
 }
