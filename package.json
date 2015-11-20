@@ -49,11 +49,13 @@
     "webpack-hot-middleware": "^2.0.0"
   },
   "dependencies": {
+    "alasql": "^0.2.1",
     "baobab": "^2.1.1",
     "cerebral": "^0.23.0",
     "cerebral-baobab": "^0.3.1",
     "cerebral-react": "^0.5.1",
     "cerebral-router": "^0.7.3",
+    "knex": "git@github.com:randomnerd/knex.git#alasql",
     "lodash": "^3.10.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0"

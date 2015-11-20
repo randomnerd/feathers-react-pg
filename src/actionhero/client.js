@@ -35,7 +35,7 @@ class ActionHeroService extends EventEmitter {
   }
 
   remove(query, callback) {
-    this.client.action(this.name + 'Remove', {apiVersion: 1, query}, (data) => {
+    this.client.action(this.name + 'Destroy', {apiVersion: 1, query}, (data) => {
       data.error ? callback(data.error) : callback(null, data.count);
     });
   }
