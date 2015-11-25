@@ -9,15 +9,15 @@ export default function(controller) {
   controller.signal('postsOpened', [
     actions.setTitle('Posts index'),
     actions.setPage('posts'),
-    actions.setLoading(true),
-    [
-      heroActions.load('posts'), {
-        success: [
-          heroActions.set('posts'),
-          actions.setLoading(false)
-        ]
-      }
-    ]
+    // actions.setLoading(true),
+    // [
+    //   heroActions.load('post'), {
+    //     success: [
+    //       heroActions.set('post'),
+    //       actions.setLoading(false)
+    //     ]
+    //   }
+    // ]
   ]);
   controller.signal('postOpened', [
     actions.setPage('post'),
@@ -33,21 +33,21 @@ export default function(controller) {
   ]);
   controller.signal('createPost', [
     [
-      heroActions.create('posts'), {
+      heroActions.create('post'), {
         success: [heroActions.created]
       }
     ]
   ]);
   controller.signal('updatePost', [
     [
-      heroActions.update('posts'), {
+      heroActions.update('post'), {
         success: [heroActions.updated]
       }
     ]
   ]);
   controller.signal('removePost', [
     [
-      heroActions.remove('posts'), {
+      heroActions.remove('post'), {
         success: [heroActions.removed]
       }
     ]

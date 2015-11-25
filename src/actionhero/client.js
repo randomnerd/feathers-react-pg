@@ -44,19 +44,90 @@ class ActionHeroService extends EventEmitter {
 export default class ActionHero {
   constructor(services) {
     this.services = {};
+    this.data = {};
+    this.subscriptions = [];
     this.url = window.location.origin.replace(/\:3000/, ':8080');
-    this.aHero = window.ah = new ActionheroClient({url: this.url});
+    this.client = new ActionheroClient({url: this.url});
     for (let service of services) { this.addService(service); };
+    this.client.on('message', this.onData.bind(this));
+  }
+
+  onData(payload) {
+    let {e: event, s: subscription, c: branch, d: data} = payload;
+    if (!event) return;
+
+    switch (event) {
+    case 'ps:c': return this._onPubSubCreate(branch, data);
+    case 'ps:u': return this._onPubSubUpdate(branch, data);
+    case 'ps:r': return this._onPubSubRemove(branch, data);
+    default    : return;
+    }
+  }
+
+  _onPubSubCreate(branch, data) {
+    console.log('onCreate', branch, data);
+
+    this.controller.signals.aHero.created({service: branch, model: data});
+
+    if (!this.data[branch]) return this.data[branch] = [data];
+
+    let pos = _.findIndex(this.data[branch], _.matches(data));
+    if (pos !== -1) return;
+    this.data[branch].push(data);
+  }
+
+  _onPubSubUpdate(branch, {query, data}) {
+    console.log('onUpdate', branch, query, data);
+
+    this.controller.signals.aHero.updated({service: branch, model: data, query});
+
+    if (!this.data[branch]) return;
+
+    let newItems = _.map(this.data[branch], (item) => {
+      if (_.matches(query)(item)) item = _.merge(_.clone(item), data);
+      return item;
+    });
+
+    this.data[branch] = newItems;
+  }
+
+  _onPubSubRemove(branch, query) {
+    console.log('onRemove', branch);
+
+    this.controller.signals.aHero.removed({service: branch, query});
+
+    if (!this.data[branch]) return;
+
+    this.data[branch] = _.reject(this.data[branch], _.matches(query));
   }
 
   addService(name) {
-    this.services[name] = new ActionHeroService(name, this.aHero);
-    //this.aHero.service('/api/' + name);
+    this.services[name] = new ActionHeroService(name, this.client);
+    //this.client.service('/api/' + name);
     return this.services[name];
   }
 
+  subscribe(name, callback) {
+    this.client.action('subscribe', {name}, (data) => {
+      if (data.error) return callback(data.error);
+      this.subscriptions.push(name);
+      callback(data);
+    });
+  }
+
+  unsubscribe(name, callback) {
+    this.client.action('unsubscribe', {name}, (data) => {
+      if (data.error) return callback(data.error);
+      let pos = this.subscriptions.indexOf(name);
+      if (pos === -1) return callback(new Error('Not subscribed'));
+      this.subscriptions.splice(pos, 1);
+      callback(data);
+    });
+  }
+
   setupController(controller) {
-    controller.services.aHero = {_client: this.aHero};
+    this.controller = controller;
+    controller.services.aHero = {_client: this.client};
     for (let serviceName of Object.keys(this.services)) {
       let service = this.services[serviceName];
       controller.services.aHero[serviceName] = service;

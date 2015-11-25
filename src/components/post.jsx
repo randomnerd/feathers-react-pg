@@ -2,7 +2,7 @@ import React from 'react';
 import {Decorator as Cerebral} from 'cerebral-react';
 
 @Cerebral({
-  post: ['data', 'post']
+  post: ['post']
 })
 export default class PostPage extends React.Component {
   render() {

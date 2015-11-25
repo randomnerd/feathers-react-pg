@@ -42,6 +42,8 @@ const actions = {
     console.log('aHero.created', input.service, input.model);
     let path = ['data', input.service]
     let serviceData = state.get(path) || [];
+    let pos = _.findIndex(serviceData, _.matches(input.model));
+    if (pos !== -1) return;
     state.set(path, serviceData.concat([input.model]));
   },
 

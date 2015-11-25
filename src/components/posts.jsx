@@ -2,7 +2,7 @@ import React from 'react';
 import {Decorator as Cerebral} from 'cerebral-react';
 
 @Cerebral({
-  posts: ['data', 'posts']
+  posts: ['data', 'post']
 })
 export default class PostsPage extends React.Component {
   submitPost(e) {
@@ -17,6 +17,7 @@ export default class PostsPage extends React.Component {
 
   updatePost(post, e) {
     e.preventDefault();
+    if (!post) return;
     let query = { id: post.id };
     let model = { title: this.refs.title.value };
     this.props.signals.updatePost({query, model});
@@ -24,11 +25,13 @@ export default class PostsPage extends React.Component {
 
   removePost(post, e) {
     e.preventDefault();
+    if (!post) return;
     let query = { id: post.id };
     this.props.signals.removePost({query});
   }
 
   renderPost(post) {
+    if (!post) return;
     return (
       <li key={post.id}>
         <a href={"/posts/" + post.id}>{post.title}</a>

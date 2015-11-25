@@ -1,6 +1,6 @@
 export default {
   setPosts(input, state) {
-    state.set(['data', 'posts'], input.posts);
+    state.set(['data', 'post'], input.posts);
   },
 
   setLoading(isLoading = true) {
@@ -14,7 +14,7 @@ export default {
   },
 
   setPost(input, state) {
-    state.set(['data', 'post'], input.model);
+    state.set(['post'], input.model);
   },
 
   setLayout(layout) {
